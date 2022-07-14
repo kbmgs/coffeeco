@@ -1,4 +1,9 @@
 {
   "objectscript.export.folder": "services/cls",
   "objectscript.export.filter": "ICO.%",
+  "objectscript.conn": {
+    "server": "20220707",
+    "ns": "USER",
+    "active": true
+  },
 }
