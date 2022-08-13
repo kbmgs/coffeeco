@@ -1,11 +1,10 @@
-Class ObjectScript.DataEntry4
+Class ObjectScript.DataEntry3
 {
 /// Main loop section
 ClassMethod Main()
 {
     while ..Prompt(.answers){
         do ..Display(answers)
-        do ..Store(answers)
     }
 }
 
@@ -32,6 +31,7 @@ ClassMethod Prompt(ByRef answers as %String) As %Boolean
     set answers = $LISTBUILD(name,phone,intdob)
 
     return 1 // at last return true
+
 }
 
 //模式匹配 
@@ -52,11 +52,6 @@ ClassMethod ValidPhone(ByRef phone as %String) As %Boolean
 {
     if $MATCH(phone,"(\d{3}-)?\d{3}-\d{4}") {
         set:($match(phone, "\d{3}-\d{4}")) phone = "617-" _ phone  // add default area code
-        // is phone already taken?
-        if $DATA(^PersonI("Phone",phone)) {
-            w !,"Phone number already in use."
-            return 0
-        }
         return 1 
     }
     else {
@@ -93,43 +88,4 @@ ClassMethod Display(answers as %String)
     w !,"DOB:",?20,$zdate(intdob,2) //13 Aug 2022
     w !,"=================================",!
 }
-
-/// store the data
-ClassMethod Store(answers as %String)
-{
-    read !,"Store? (y/n)",yn //ask if store
-    if ((yn '= "y") && (yn '="Y")){
-        w "..not stored."
-        quit  //作用域:classmethod
-    }
-
-    set id = $INCREMENT(^PersonD) // $increment to generate a new ID
-    
-    TStart  //使用 TStart 和 TCommit 确保对全局变量的所有更新都是事务的一部分。
-
-    set ^PersonD(id) = answers // store the answers
-    
-    set $LISTBUILD(name,phone,intdob) = answers
-    //split name into last and first for storage in index
-    set last = $PIECE(name,",",1),first = $PIECE(name,",",2)
-
-    set ^PersonI("name",last,first,id) = "" //index last and first name
-    set ^PersonI("Phone",phone) = id        //index the UNIQUE phone
-    set ^PersonI("DOB",intdob,id) = ""      //index the internal DOB
-
-    //turn the id into a "chunk #" and a "position #"
-    //and set a bit into the bitmap index
-    //id\64000: id被64000整除
-    //id#64000: id被整除后的余数
-    set chunk = (id\64000) + 1 ,position = (id#64000) + 1
-    set $BIT(^PersonI("Bitmap-ID",chunk),position) = 1
-
-    TCommit
-
-    w "...stored"
-
-}
-
-
-
 }

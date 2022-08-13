@@ -1,32 +1,30 @@
 Class ObjectScript.DataEntry2
 {
-
-/// Description
-ClassMethod Prompt() As %Boolean [ PublicList = (name, phone, dob) ]
-{
-    read !,"Name: ",name
-    return:(name="") 0
-    read !,"Phone: ",phone
-    read !,"DOB: ",dob
-    return 1 //return true
-}
-
-/// Description
-ClassMethod Display() [ PublicList = (name, phone, dob) ]
-{
-    write !!, "========================================"
-    write !, "Name:", ?20, name
-    write !, "Phone:", ?20, phone
-    write !, "DOB:", ?20, dob
-    write !, "========================================", !
-}
-
-/// The loop should quit when Prompt() returns false.
+/// Main loop section
 ClassMethod Main()
 {
-    While (..Prompt() /* condition */) {
+    while ..Prompt(){
         do ..Display()
     }
+}
+/// prompt until user doesn't enter a name
+ClassMethod Prompt() As %Boolean [publiclist = (name,phone,dob)]
+{
+    read !,"Name:",name
+    return:(name = "") 0 //不输入则返回0
+    read !,"Phone:",phone
+    read !,"DOB:",dob
+    return 1 //返回true
+}
+
+/// display the data
+ClassMethod Display() [publiclist=(name,phone,dob)]
+{
+    w !!,"================================="
+    w !,"Name:",?20,name
+    w !,"Phone:",?20,phone
+    w !,"DOB:",?20,dob
+    w !,"=================================",!
 }
 
 }

@@ -1,18 +1,17 @@
 Class ObjectScript.DataEntry1
 {
-
 /// Main
-ClassMethod Main() As %Status
+ClassMethod Main()
 {
-    read !, "Name: " , name
-    if name = "" { quit }  // user entered nothing
-    read !, "Phone: ", phone
-    read !, "DOB: ", dob
+    read !,"Name: ",name
+    //if name = ""{quit}
+    quit:(name = "")
+    read !,"Phone: ",phone
+    read !,"DOB: ",dob
 
-    // display the data
-    write !!!, "Name:", ?20, name
-    write !, "Phone:", ?20, phone
-    write !, "DOB:", ?20, dob
+    //display
+    w !!!,"Name:",?20,name
+    w !,"Phone:",?20,phone
+    w !,"DOB:",?20,dob
 }
-
 }
